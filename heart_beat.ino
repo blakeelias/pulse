@@ -19,8 +19,13 @@ int led_b = 9;         // the PWM pin the LED is attached to
 
 int color[3] = {255, 10, 20};
 
+float brightness_pulse[] = {0.0, 0.1, 0.2, 0.4, 0.6, 0.4, 0.2, 0.4, 0.8, 0.9, 0.8, 0.4, 0.2, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+int num_time_steps = sizeof(brightness_pulse) / sizeof(brightness_pulse[0]);
+
 int brightness = 0;  // how bright the LED is
 int fadeAmount = 5;  // how many points to fade the LED by
+
+int t = 0;
 
 // the setup routine runs once when you press reset:
 void setup() {
@@ -32,18 +37,15 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
-  // set the brightness of pin 9:
-  analogWrite(led_r, brightness * color[0] / 255);
-  analogWrite(led_g, brightness * color[1] / 255);
-  analogWrite(led_b, brightness * color[2] / 255);
+  // set the brightness of LED pins:
+  brightness = brightness_pulse[t % num_time_steps];
+  analogWrite(led_r, brightness * color[0]);
+  analogWrite(led_g, brightness * color[1]);
+  analogWrite(led_b, brightness * color[2]);
 
   // change the brightness for next time through the loop:
-  brightness = brightness + fadeAmount;
+  t++;
 
-  // reverse the direction of the fading at the ends of the fade:
-  if (brightness <= 0 || brightness >= 255) {
-    fadeAmount = -fadeAmount;
-  }
   // wait for 30 milliseconds to see the dimming effect
   delay(30);
 }
