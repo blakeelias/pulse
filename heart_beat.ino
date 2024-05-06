@@ -1,36 +1,45 @@
-/*
-  Fade
+/*  PulseSensor Starter Project and Signal Tester
+ *  The Best Way to Get Started  With, or See the Raw Signal of, your PulseSensor.com™ & Arduino.
+ *
+ *  Here is a link to the tutorial (including wiring diagram for connecting pulse sensor to Arduino)
+ *  https://pulsesensor.com/pages/code-and-guide
+ *
+ *  WATCH ME (Tutorial Video):
+ *  https://www.youtube.com/watch?v=RbB8NSRa5X4
+ *
+ *
+-------------------------------------------------------------
+1) This shows a live human Heartbeat Pulse.
+2) Live visualization in Arduino's Cool "Serial Plotter".
+3) Blink an LED on each Heartbeat.
+4) This is the direct Pulse Sensor's Signal.
+5) A great first-step in troubleshooting your circuit and connections.
+6) "Human-readable" code that is newbie friendly."
 
-  This example shows how to fade an LED on pin 9 using the analogWrite()
-  function.
-
-  The analogWrite() function uses PWM, so if you want to change the pin you're
-  using, be sure to use another PWM capable pin. On most Arduino, the PWM pins
-  are identified with a "~" sign, like ~3, ~5, ~6, ~9, ~10 and ~11.
-
-  This example code is in the public domain.
-
-  https://www.arduino.cc/en/Tutorial/BuiltInExamples/Fade
 */
 
-int led_1[3] = {11, 10, 9};       // the PWM pin the LED is attached to (R, G, B)
-int led_2[3] = {3, 5, 6};         // the PWM pin the LED is attached to (R, G, B)
 
-
+// LED setup:
+// PWM pins for LED digital output (R, G, B)
+int led_1[3] = {11, 10, 9};
+int led_2[3] = {3, 5, 6};
+// Color to display:
 int color[3] = {255, 10, 20};
+float brightness;
 
-// float brightness_pulse[] = {0.0, 0.1, 0.2, 0.4, 0.6, 0.4, 0.2, 0.4, 0.8, 0.9, 0.8, 0.4, 0.2, 0.1, 0.0, 0.0};
-float brightness_pulse[] = {0.4, 0.8, 1.0, 1.0, 0.8, 0.4, 0.6, 0.8, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.8, 0.6, 0.5, 0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-int num_time_steps = sizeof(brightness_pulse) / sizeof(brightness_pulse[0]);
+//  Pulse Sensor Configuration
+int pulse_sensor_input_pin = 0;      // Pulse Sensor PURPLE WIRE connected to ANALOG PIN 0
+int pulse_sensor_signal;                // holds the incoming raw data. Signal value can range from 0-1024
+int pulse_sensor_threshold = 580;       // Determine which Signal to "count as a beat", and which to ingore.
 
-int brightness = 0;  // how bright the LED is
-int fadeAmount = 5;  // how many points to fade the LED by
 
+// Keep track of time
 int t = 0;
+
 
 // the setup routine runs once when you press reset:
 void setup() {
-  // declare pin 9 to be an output:
+  // declare LED pins to be outputs:
   for (int i = 0; i < 3; ++i) {
     pinMode(led_1[i], OUTPUT);
     pinMode(led_2[i], OUTPUT);
@@ -39,16 +48,19 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
+  pulse_sensor_signal = analogRead(pulse_sensor_input_pin);  // Read the PulseSensor's value
+  Serial.println("Signal " + String(pulse_sensor_signal)); // Send "reading " followed by the Signal value to Serial Plotter (open with "Tools -> Serial Plotter" to see graph during live demo)
+
   // set the brightness of LED pins:
-  brightness = brightness_pulse[t % num_time_steps];
+  brightness = (pulse_sensor_signal > pulse_sensor_threshold) ? 1.0 : 0.0;
   for (int i = 0; i < 3; ++i) {
     analogWrite(led_1[i], brightness * color[i]);
     analogWrite(led_2[i], brightness * color[i]);
   }
 
-  // change the brightness for next time through the loop:
+  // Keep track of time
   t++;
 
-  // wait for 30 milliseconds to see the dimming effect
-  delay(30);
+  // wait for 10 milliseconds to see the dimming effect
+  delay(10);
 }
