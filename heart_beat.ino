@@ -13,14 +13,14 @@
   https://www.arduino.cc/en/Tutorial/BuiltInExamples/Fade
 */
 
-int led_r = 11;         // the PWM pin the LED is attached to
-int led_g = 10;         // the PWM pin the LED is attached to
-int led_b = 9;         // the PWM pin the LED is attached to
+int led_1[3] = {11, 10, 9};       // the PWM pin the LED is attached to (R, G, B)
+int led_2[3] = {3, 5, 6};         // the PWM pin the LED is attached to (R, G, B)
+
 
 int color[3] = {255, 10, 20};
 
 // float brightness_pulse[] = {0.0, 0.1, 0.2, 0.4, 0.6, 0.4, 0.2, 0.4, 0.8, 0.9, 0.8, 0.4, 0.2, 0.1, 0.0, 0.0};
-float brightness_pulse[] = {0.4, 0.8, 0.9, 1.0, 0.9, 0.8, 0.4, 0.6, 0.8, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.8, 0.6, 0.5, 0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float brightness_pulse[] = {0.4, 0.8, 1.0, 1.0, 0.8, 0.4, 0.6, 0.8, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.8, 0.6, 0.5, 0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 int num_time_steps = sizeof(brightness_pulse) / sizeof(brightness_pulse[0]);
 
 int brightness = 0;  // how bright the LED is
@@ -31,18 +31,20 @@ int t = 0;
 // the setup routine runs once when you press reset:
 void setup() {
   // declare pin 9 to be an output:
-  pinMode(led_r, OUTPUT);
-  pinMode(led_g, OUTPUT);
-  pinMode(led_b, OUTPUT);
+  for (int i = 0; i < 3; ++i) {
+    pinMode(led_1[i], OUTPUT);
+    pinMode(led_2[i], OUTPUT);
+  }
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
   // set the brightness of LED pins:
   brightness = brightness_pulse[t % num_time_steps];
-  analogWrite(led_r, brightness * color[0]);
-  analogWrite(led_g, brightness * color[1]);
-  analogWrite(led_b, brightness * color[2]);
+  for (int i = 0; i < 3; ++i) {
+    analogWrite(led_1[i], brightness * color[i]);
+    analogWrite(led_2[i], brightness * color[i]);
+  }
 
   // change the brightness for next time through the loop:
   t++;
