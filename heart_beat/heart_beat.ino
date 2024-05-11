@@ -39,6 +39,9 @@ int t = 0;
 
 // the setup routine runs once when you press reset:
 void setup() {
+
+  Serial.begin(115200);          // For Serial Monitor
+
   // declare LED pins to be outputs:
   for (int i = 0; i < 3; ++i) {
     pinMode(led_1[i], OUTPUT);
