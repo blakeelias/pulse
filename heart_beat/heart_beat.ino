@@ -55,7 +55,12 @@ void loop() {
   Serial.println("Signal " + String(pulse_sensor_signal)); // Send "reading " followed by the Signal value to Serial Plotter (open with "Tools -> Serial Plotter" to see graph during live demo)
 
   // set the brightness of LED pins:
-  brightness = (pulse_sensor_signal > pulse_sensor_threshold) ? 1.0 : 0.0;
+  if (pulse_sensor_signal > pulse_sensor_threshold) {
+    brightness = 1.0;
+  }
+  else {
+    brightness *= 0.95;
+  }
   for (int i = 0; i < 3; ++i) {
     analogWrite(led_1[i], brightness * color[i]);
     analogWrite(led_2[i], brightness * color[i]);
